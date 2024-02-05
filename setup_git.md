@@ -3,5 +3,5 @@
 * When add key: ssh-add testkey instead of adding the path
 * push origin master not working
 
-### Branching 
-here I made changes on the feature_issue_branch and then merge
+### Branching
+Here is the resolve the conflict and pulled request to local
