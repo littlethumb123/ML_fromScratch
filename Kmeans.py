@@ -1,5 +1,6 @@
 class kMeans():
     """
+    Algorithms
     1. set k centroids within the dataset (the data points are already on the plane)
     2. calculate distance bewteen the points with each centroid and color each one to that centroid
     3. Update the centroid of each contempory cluster
