@@ -4,4 +4,4 @@
 * push origin master not working
 
 ### Branching 
-here I made changes on the feature_issue_branch and then push
+here I made changes on the feature_issue_branch and then merge
