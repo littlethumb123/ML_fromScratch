@@ -13,3 +13,6 @@ just like I make a branch and another teammate made a change to the master at th
 
 The above result is the resolved result
 
+Now I made a mistake here "Error"
+Error edit 1
+
