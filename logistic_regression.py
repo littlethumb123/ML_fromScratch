@@ -1,5 +1,5 @@
 ######### Implement Logistic regression from the scratch ##############
-# Loss function: L = -1/N * sum(y_true * log(y_pred) + (1 - y_true) * log(1 - y_pred))
+# Loss function: L = -1/N · Σ[y·log(ŷ) + (1-y)·log(1-ŷ)] where y = true labels, ŷ = predicted probabilities
 # Linear: z = W*X + b
 # Sigmoid: y_pred = 1 / (1 + exp(-z))
 
@@ -7,51 +7,52 @@
 
 # 1. Get dL/dw
 # dL/dw = dL/dy_pred * dy_pred/dz * dz/dw
-# dL/dy_pred = -1/N * sum(y_true/y_pred - (1 - y_true)/(1 - y_pred))
-# dy_pred/dz = y_pred * (1 - y_pred) (derivative of the sigmoid function)
+# dL/dy_pred = --1/N · [y/y_pred - (1-y)/(1-y_pred)] (derivative of the loss function)
+# dy_pred/dz = y_pred * (1 - y_pred) (derivative of the sigmoid function: The derivative of the sigmoid function, σ(x) = 1 / (1 + e^(-x)), is given by σ(x) * (1 - σ(x)))
 # dz/dw = X
 # dL/dw = -1/N * sum(y_true/y_pred - (1 - y_true)/(1 - y_pred)) * y_pred * (1 - y_pred) * X
-# dL/dw = -1/N * sum(y_true - y_pred) * X
+# (turn to vectorization)dL/dw = -1/N * (y_true - y_pred) dot X      # (y_pred and y_true: Both are vectors containing all N samples' values)
 
 # 2. Get dL/db
 # dL/db = dL/dy_pred * dy_pred/dz * dz/db
 # dz/db = 1
-# dL/db = -1/N * sum(y_true - y_pred)
+# dL/db = -1/N * sum(y_true - y_pred)   # this is scaler value so sum is needed
 
 
 
+from math import exp
 import numpy as np
 class LogisitRegression:
 
     def __init__(self, lr, n_iter):
         self.lr = lr
         self.n_iter = n_iter
-        self.W = None
-        self.b = None
+        self.W = None  # shape (n_features,)
+        self.b = None  # shape (1,)
     
+    def __sigmoid(self, z):
+        return 1/(1 + np.exp(-z)) # formula: 
+
     def fit(self, X, y):
         n_samples, n_features = X.shape
         self.W = np.zeros(n_features)
         self.b = 0
-        for _ in range(self.n_iter):
-            z = np.dot(X, self.W) + self.b
-            y_pred = self.sigmoid(z)
-            
-            # first derivatives of the loss function
-            dw = (-1/n_samples) * np.dot(X.T, (y - y_pred))
-            db = (-1/n_samples) * np.sum(y - y_pred)
+        for i in range(self.n_iter):
+            z = X.dot(self.W) + self.b # shape (n_samples,)
+            y_pred = self.__sigmoid(z)
 
+            # Compute gradients
+            dw = (1/n_samples) * X.T.dot(y_pred - y)
+            db = (1/n_samples) * np.sum(y_pred - y)
             self.W -= self.lr * dw
             self.b -= self.lr * db
+        print("Traning completed")
 
     def predict(self, X):
-        z = np.dot(X, self.W) + self.b
-        y_pred = self.sigmoid(z)
-        return [1 if i > 0.5 else 0 for i in y_pred]
+        z = X.dot(self.W) + self.b
+        y_pred = self.__sigmoid(z)
+        return
         
-    
-    def sigmoid(self, z):
-        return 1 / (1 + np.exp(-z))
 
 if __name__ == "__main__":
     from sklearn.model_selection import train_test_split
