@@ -5,7 +5,11 @@
 # 4. F1 Score
 # 5. ROC Curve
 # 6. AUC
-
+# Confusion matrix
+# 7. TPR = True positive/True positive + False negative
+# 8. TNR = True negative/True negative + False positive
+# 9. FPR = False positive/False positive + True negative
+# 10. FNR = False negative/False negative + True positive
 import numpy as np
 import pandas as pd
 
@@ -29,13 +33,13 @@ class EvalMetrics:
         """
         Precision = true_positive / true_positive + false_positive
         """
-        return np.sum((y_true == 1)&(y_pred == 1))/np.sum(y_pred)
+        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_pred)
 
     def recall(self, y_true, y_pred):
         """
         Recall = true_positive / true_positive + false_negative
         """
-        return np.sum((y_true == 1) & (y_pred == 1))/np.sum(y_true)
+        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_true)
 
 class TestCase:
     def test_accuracy(self):
