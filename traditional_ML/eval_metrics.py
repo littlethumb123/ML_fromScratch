@@ -29,13 +29,13 @@ class EvalMetrics:
         """
         Precision = true_positive / true_positive + false_positive
         """
-        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_pred)
+        return np.sum((y_true == 1)&(y_pred == 1))/np.sum(y_pred)
 
     def recall(self, y_true, y_pred):
         """
         Recall = true_positive / true_positive + false_negative
         """
-        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_true)
+        return np.sum((y_true == 1) & (y_pred == 1))/np.sum(y_true)
 
 class TestCase:
     def test_accuracy(self):
@@ -53,3 +53,9 @@ class TestCase:
         y_pred = np.array([1, 0, 1, 0, 0, 1, 0, 1, 0, 1])
         em = EvalMetrics()
         print(em.recall(y_true, y_pred))
+
+if __name__ == '__main__':
+    tc = TestCase()
+    tc.test_accuracy()
+    tc.test_precision()
+    tc.test_recall()
