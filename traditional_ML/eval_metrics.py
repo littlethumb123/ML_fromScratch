@@ -37,9 +37,45 @@ class EvalMetrics:
 
     def recall(self, y_true, y_pred):
         """
+        True positive rate
         Recall = true_positive / true_positive + false_negative
         """
         return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_true)
+    
+    def specificity(self, y_true, y_pred):
+        """
+        True negative rate
+        Specificity = true_negative / true_negative + false_positive
+        """
+        return np.sum(y_true == 0 & y_pred == 0)/np.sum(y_true == 0)
+
+    def roc_auc(self, y_true, y_prob):
+        """
+        True positive (recall) and false positive rates (1 - specificity)
+        """
+        threshold = np.arange(0, 1.1, 0.1)
+        tpr = []
+        fpr = []
+        
+        for t in threshold:
+            # True positive rate = TP / (TP + FN)
+            y_pred = (y_prob >= t).astype(int)
+            tp = np.sum((y_true == 1) & (y_pred == 1))
+            fn = np.sum((y_true == 1) & (y_pred == 0))
+            fp = np.sum((y_true == 0) & (y_pred == 1))
+            tn = np.sum((y_true == 0) & (y_pred == 0))
+            tpr.append(tp/(tp + fn) if (tp + fn) > 0 else 0)
+            fpr.append(fp/(fp + tn) if (fp + tn) > 0 else 0)
+
+        # sort by fpr make sure the list ranked ascendingly
+        sort_index = np.argsort(fpr)
+        fpr = fpr[sort_index]
+        tpr = tpr[sort_index]
+        return np.trapz(tpr, fpr)
+
+        
+
+
 
 class TestCase:
     def test_accuracy(self):
