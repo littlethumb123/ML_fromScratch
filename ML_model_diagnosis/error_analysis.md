@@ -2,11 +2,25 @@
 ## Error analysis
 ### Model Capacity issues:
 1. Overfitting (high variance):
-    -  high-bias underfitting causes high error on both train and test sets. All metrics (accuracy, F1, etc.) stay low. The ROC curve will lie near the diagonal (AUC≈0.5) and PR curve near the bottom-left, reflecting no discriminative power.
+    -  Overfitting occurs when model performs well on training data but poorly on dev/test data.
+    All metrics (accuracy, F1, etc.) stay low. The ROC curve will lie near the diagonal (AUC≈0.5) and PR curve near the bottom-left, reflecting no discriminative power.
     - The model is too complex and captures noise in the training data.
 2. Underfitting (high bias):
     - The model performs poorly on both the training and test data. In a confusion matrix, an overfit model may show many TPs on training data but produce many more FPs and FNs on test data (so test recall and precision both degrade).
     - The model is too simple and fails to capture the underlying patterns in the data.
+
+### Optimization issues:
+1. Poor convergence:
+    - The model fails to converge to a good solution during training, leading to suboptimal performance. This normally happens when the learning rate is too high or too low, or when the objective function is not suitable for the problem.
+    - Diagnosis:
+        - The loss function does not decrease over time or oscillates wildly.
+        - The model's performance metrics (accuracy, F1, etc.) do not improve significantly during training.
+2. Local minima or saddle points:
+    - The model gets stuck in a local minimum or saddle point during training, preventing it from finding the global optimum.
+    - Diagnosis:
+        - The loss function plateaus or oscillates around a certain value without significant improvement.
+        - The model's performance metrics do not improve significantly over time.
+
 ### Data quality:
 1. Data imbalance:
     - The model is trained on imbalanced data, leading to biased predictions.
@@ -61,7 +75,16 @@
     - Ensure the training process is effective: e.g., train longer or with a better optimizer if the model simply hasn’t converged yet.
     - If feasible, obtain more informative data. Sometimes underfitting means the phenomenon is just hard to predict with available features – adding a new data modality (like adding imaging data to a model that currently only uses lab test results) can improve the fit.
 ### Data quality:
-
+1. Data imbalance:
+    - Use stratified sampling to ensure balanced representation of classes in training and test sets.
+    - Apply techniques like SMOTE (Synthetic Minority Over-sampling Technique) to generate synthetic samples for the minority class.
+    - Use cost-sensitive learning or class weights to penalize misclassifications of the minority class more heavily.
+    - Consider using ensemble methods like Random Forest or Gradient Boosting, which can handle imbalanced data better than single models.
+2. Noisy labels:
+    - Use robust loss functions that are less sensitive to label noise (e.g., Huber loss instead of MSE).
+    - Implement data cleaning techniques to identify and correct mislabeled instances.
+    - Use ensemble methods or model averaging to reduce the impact of noisy labels.
+    - Consider using semi-supervised learning or active learning to improve label quality by leveraging unlabeled data or querying for labels on uncertain instances.
 ### Flawed pipeline:
 1. Data leakage:
     - Ensure that the training and test data are properly separated and that no information from the test data is used during training.

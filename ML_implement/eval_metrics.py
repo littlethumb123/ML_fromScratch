@@ -33,30 +33,41 @@ class EvalMetrics:
         """
         Precision = true_positive / true_positive + false_positive
         """
-        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_pred)
+        tp = np.sum((y_true == 1) & (y_pred == 1))
+        fp = np.sum((y_true == 0) & (y_pred == 1))
+        if fp + tp == 0: return 0
+        return tp/(tp + fp)
 
     def recall(self, y_true, y_pred):
         """
         True positive rate
         Recall = true_positive / true_positive + false_negative
         """
-        return np.sum(y_true == 1 & y_pred == 1)/np.sum(y_true)
+        tp = np.sum((y_true == 1) & (y_pred == 1))
+        fn = np.sum((y_true == 1) & (y_pred == 0))
+        if tp + fn == 0: return 0
+        return tp/(tp + fn)
     
     def specificity(self, y_true, y_pred):
         """
         True negative rate
         Specificity = true_negative / true_negative + false_positive
         """
-        return np.sum(y_true == 0 & y_pred == 0)/np.sum(y_true == 0)
+        tn = np.sum((y_true == 0) & (y_pred == 0))
+        fp = np.sum((y_true == 0) & (y_pred == 1))
+        if tn + fp == 0: return 0
+        return tn/(tn + fp)
 
     def roc_auc(self, y_true, y_prob):
         """
         True positive (recall) and false positive rates (1 - specificity)
+        recall = tp/tp + fn
+        fp = fp/tn + fp
         """
         threshold = np.arange(0, 1.1, 0.1)
         tpr = []
         fpr = []
-        
+
         for t in threshold:
             # True positive rate = TP / (TP + FN)
             y_pred = (y_prob >= t).astype(int)
